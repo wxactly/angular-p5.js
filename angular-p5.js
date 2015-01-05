@@ -10,15 +10,25 @@ angular.module('angular-p5', [])
     },
     link: function(scope, element, attrs) {
       var sketchObj = null;
+      
+      var destroySketch = function() {
+        if(!sketchObj) {
+          return;
+        }
+        sketchObj.remove();
+        sketchObj = null;
+      };
+      
       scope.$watch('sketch', function(sketch, oldSketch) {
-        if(oldSketch && sketchObj) {
-          sketchObj.remove();
-          sketchObj = null;
+        if(oldSketch) {
+          destroySketch();
         }
         if(sketch) {
           sketchObj = new p5(sketch, element[0]);
         }
       });
+      
+      scope.$on('$destroy', destroySketch);
     }
   };
 });
