@@ -3,21 +3,21 @@ angular.module('example', [
 ])
 .controller('ExampleCtrl', ['$scope', 'p5', function($scope, p5) {
   $scope.mySketch = function(sketch) {
-    var origin = new p5.Vector(100, 100);
+    var r = sketch.random(0, 255);
+    var g = sketch.random(0, 255);
 
     sketch.setup = function() {
-      sketch.createCanvas(700, 410);
+      sketch.createCanvas(480, 270);
+      sketch.noStroke();
     };
 
     sketch.draw = function() {
-      var angle = sketch.radians(sketch.frameCount % 360);
-      var point = p5.Vector.fromAngle(angle)
-        .setMag(25)
-        .add(origin);
+      var colorAngle = sketch.radians(sketch.frameCount);
+      var colorVector = p5.Vector.fromAngle(colorAngle).setMag(255);
       
-      sketch.background(0);
-      sketch.fill(255);
-      sketch.ellipse(point.x, point.y, 50, 50);
+      sketch.background(r, g, colorVector.x);
+      sketch.fill(r, g, colorVector.y);
+      sketch.rect(0, 0, sketch.width / 2, sketch.height);
     };
   };
 }]);
