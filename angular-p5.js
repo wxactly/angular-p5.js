@@ -1,8 +1,8 @@
 angular.module('angular-p5', [])
-.service('p5', function($window) {
+.service('p5', ['$window', function($window) {
   return $window.p5;
-})
-.directive('p5', function(p5) {
+}])
+.directive('p5', ['p5', function(p5) {
   return {
     restrict: 'EA',
     scope: {
@@ -31,4 +31,4 @@ angular.module('angular-p5', [])
       scope.$on('$destroy', destroySketch);
     }
   };
-});
+}]);

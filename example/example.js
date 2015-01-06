@@ -1,7 +1,7 @@
 angular.module('example', [
   'angular-p5'
 ])
-.controller('ExampleCtrl', function($scope, p5) {
+.controller('ExampleCtrl', ['$scope', 'p5', function($scope, p5) {
   $scope.mySketch = function(sketch) {
     var origin = new p5.Vector(100, 100);
 
@@ -20,4 +20,4 @@ angular.module('example', [
       sketch.ellipse(point.x, point.y, 50, 50);
     };
   };
-});
+}]);
