@@ -62,3 +62,7 @@ bower install
 ```
 
 And open /example/index.html in a browser.
+
+##Demo
+
+http://wxactly.com/angular-p5.js/example/
