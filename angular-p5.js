@@ -1,5 +1,5 @@
 angular.module('angular-p5', [])
-.service('p5', ['$window', function($window) {
+.factory('p5', ['$window', function($window) {
   return $window.p5;
 }])
 .directive('p5', [function() {
@@ -11,47 +11,37 @@ angular.module('angular-p5', [])
     controller: 'p5Ctrl'
   };
 }])
-.service('p5Instance', ['$injector', 'p5', function($injector, p5) {
-  var _p5 = null;
-  
-  var p5Instance = function(element) {
-    this.element = element;
-  };
-  
-  p5Instance.prototype = {
-    init: function(sketch) {
-      if(_p5) {
-        this.destroy();
-      }
-      if(angular.isString(sketch)) {
-        sketch = $injector.get(sketch);
-      }
-      _p5 = new p5(sketch, this.element);
-    },
-    
-    destroy: function() {
-      if(_p5) {
-        _p5.remove();
-        _p5 = null;
-      }
-    }
-  };
-  
-  return p5Instance;
-}])
 .controller('p5Ctrl', ['$scope', '$element', 'p5Instance', function($scope, $element, p5Instance) {
-  var instance = new p5Instance($element[0]);
-  
   $scope.$watch('sketch', function(sketch) {
     if(sketch) {
-      instance.init(sketch);
+      p5Instance.init(sketch, $element[0]);
     }
     else {
-      instance.destroy();
+      p5Instance.destroy();
     }
   });
   
   $scope.$on('$destroy', function() {
-    instance.destroy();
+    p5Instance.destroy();
   });
+}])
+.service('p5Instance', ['$injector', 'p5', function($injector, p5) {
+  var instance = null;
+  
+  this.init = function(sketch, node) {
+    if(instance) {
+      this.destroy();
+    }
+    if(angular.isString(sketch)) {
+      sketch = $injector.get(sketch);
+    }
+    instance = new p5(sketch, node);
+  };
+  
+  this.destroy = function() {
+    if(instance) {
+      instance.remove();
+      instance = null;
+    }
+  };
 }]);
