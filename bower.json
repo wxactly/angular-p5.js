@@ -2,7 +2,7 @@
   "name": "angular-p5",
   "version": "0.0.1",
   "devDependencies": {
-    "angular": "~1.2",
+    "angular": "~1.3",
     "p5js": "~0.3.15"
   },
   "dependencies": {}

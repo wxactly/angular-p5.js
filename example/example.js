@@ -1,23 +1,23 @@
 angular.module('example', [
   'angular-p5'
 ])
-.controller('ExampleCtrl', ['$scope', 'p5', function($scope, p5) {
-  $scope.mySketch = function(sketch) {
-    var r = sketch.random(0, 255);
-    var g = sketch.random(0, 255);
+.factory('exampleSketch', ['p5', function(p5) {
+  return function(p) {
+    var r = p.random(0, 255);
+    var g = p.random(0, 255);
 
-    sketch.setup = function() {
-      sketch.createCanvas(480, 270);
-      sketch.noStroke();
+    p.setup = function() {
+      p.createCanvas(480, 270);
+      p.noStroke();
     };
 
-    sketch.draw = function() {
-      var colorAngle = sketch.radians(sketch.frameCount);
+    p.draw = function() {
+      var colorAngle = p.radians(p.frameCount);
       var colorVector = p5.Vector.fromAngle(colorAngle).setMag(255);
       
-      sketch.background(r, g, colorVector.x);
-      sketch.fill(r, g, colorVector.y);
-      sketch.rect(0, 0, sketch.width / 2, sketch.height);
+      p.background(r, g, colorVector.x);
+      p.fill(r, g, colorVector.y);
+      p.rect(0, 0, p.width / 2, p.height);
     };
   };
 }]);
