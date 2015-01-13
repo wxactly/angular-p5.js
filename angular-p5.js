@@ -12,16 +12,11 @@ angular.module('angular-p5', [])
       var wrapper = new p5Wrapper(element[0]);
       
       scope.$watch('sketch', function(sketch) {
-        if(sketch) {
-          wrapper.init(sketch);
-        }
-        else {
-          wrapper.destroy();
-        }
+        wrapper.setSketch(sketch);
       });
   
       scope.$on('$destroy', function() {
-        wrapper.destroy();
+        wrapper.setSketch(null);
       });
     }
   };
@@ -33,19 +28,17 @@ angular.module('angular-p5', [])
   };
   
   p5Wrapper.prototype = {
-    init: function(sketch) {
-      this.destroy();
-      
-      if(angular.isString(sketch)) {
-        sketch = $injector.get(sketch);
-      }
-      this.instance = new p5(sketch, this.node);
-    },
-  
-    destroy: function() {
+    setSketch: function(sketch) {
       if(this.instance) {
         this.instance.remove();
         this.instance = null;
+      }
+      
+      if(sketch) {
+        if(angular.isString(sketch)) {
+          sketch = $injector.get(sketch);
+        }
+        this.instance = new p5(sketch, this.node);
       }
     }
   };
