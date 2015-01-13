@@ -2,46 +2,53 @@ angular.module('angular-p5', [])
 .factory('p5', ['$window', function($window) {
   return $window.p5;
 }])
-.directive('p5', [function() {
+.directive('p5', ['p5Wrapper', function(p5Wrapper) {
   return {
     restrict: 'EA',
     scope: {
       sketch: '@'
     },
-    controller: 'p5Ctrl'
+    link: function(scope, element) {
+      var wrapper = new p5Wrapper(element[0]);
+      
+      scope.$watch('sketch', function(sketch) {
+        if(sketch) {
+          wrapper.init(sketch);
+        }
+        else {
+          wrapper.destroy();
+        }
+      });
+  
+      scope.$on('$destroy', function() {
+        wrapper.destroy();
+      });
+    }
   };
 }])
-.controller('p5Ctrl', ['$scope', '$element', 'p5Instance', function($scope, $element, p5Instance) {
-  $scope.$watch('sketch', function(sketch) {
-    if(sketch) {
-      p5Instance.init(sketch, $element[0]);
-    }
-    else {
-      p5Instance.destroy();
-    }
-  });
+.factory('p5Wrapper', ['$injector', 'p5', function($injector, p5) {
+  var p5Wrapper = function(node) {
+    this.instance = null;
+    this.node = node;
+  };
   
-  $scope.$on('$destroy', function() {
-    p5Instance.destroy();
-  });
-}])
-.service('p5Instance', ['$injector', 'p5', function($injector, p5) {
-  var instance = null;
-  
-  this.init = function(sketch, node) {
-    if(instance) {
+  p5Wrapper.prototype = {
+    init: function(sketch) {
       this.destroy();
+      
+      if(angular.isString(sketch)) {
+        sketch = $injector.get(sketch);
+      }
+      this.instance = new p5(sketch, this.node);
+    },
+  
+    destroy: function() {
+      if(this.instance) {
+        this.instance.remove();
+        this.instance = null;
+      }
     }
-    if(angular.isString(sketch)) {
-      sketch = $injector.get(sketch);
-    }
-    instance = new p5(sketch, node);
   };
   
-  this.destroy = function() {
-    if(instance) {
-      instance.remove();
-      instance = null;
-    }
-  };
+  return p5Wrapper;
 }]);
