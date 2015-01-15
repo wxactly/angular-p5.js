@@ -10,14 +10,13 @@ angular.module('angular-p5', [])
     },
     link: function(scope, element) {
       var wrapper = p5Wrapper.create();
-      wrapper.node = element[0];
       
       scope.$watch('sketch', function(sketch) {
-        wrapper.setSketch(sketch);
+        wrapper.init(sketch, element[0]);
       });
   
       scope.$on('$destroy', function() {
-        wrapper.setSketch(null);
+        wrapper.destroy();
       });
     }
   };
@@ -28,17 +27,21 @@ angular.module('angular-p5', [])
       return Object.create(this);
     },
     
-    setSketch: function(sketch) {
-      if(this.instance) {
-        this.instance.remove();
-        this.instance = null;
-      }
+    init: function(sketch, node) {
+      this.destroy();
   
       if(sketch) {
         if(angular.isString(sketch)) {
           sketch = $injector.get(sketch);
         }
-        this.instance = new p5(sketch, this.node);
+        this.instance = new p5(sketch, node);
+      }
+    },
+    
+    destroy: function() {
+      if(this.instance) {
+        this.instance.remove();
+        this.instance = null;
       }
     }
   };
