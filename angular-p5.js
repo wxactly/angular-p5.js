@@ -2,14 +2,14 @@ angular.module('angular-p5', [])
 .factory('p5', ['$window', function($window) {
   return $window.p5;
 }])
-.directive('p5', ['p5Wrapper', function(p5Wrapper) {
+.directive('p5', ['p5WrapperFactory', function(p5WrapperFactory) {
   return {
     restrict: 'EA',
     scope: {
       sketch: '@'
     },
     link: function(scope, element) {
-      var wrapper = p5Wrapper.create();
+      var wrapper = p5WrapperFactory();
       
       scope.$watch('sketch', function(sketch) {
         wrapper.init(sketch, element[0]);
@@ -21,17 +21,13 @@ angular.module('angular-p5', [])
     }
   };
 }])
-.factory('p5Wrapper', ['$injector', 'p5', function($injector, p5) {
-  return {
-    create: function() {
-      return Object.create(this);
-    },
-    
+.factory('p5WrapperFactory', ['$injector', 'p5', function($injector, p5) {
+  var p5Wrapper = {
     init: function(sketch, node) {
       this.destroy();
   
       if(sketch) {
-        if(angular.isString(sketch)) {
+        if($injector.has(sketch)) {
           sketch = $injector.get(sketch);
         }
         this.instance = new p5(sketch, node);
@@ -44,5 +40,8 @@ angular.module('angular-p5', [])
         this.instance = null;
       }
     }
+  };
+  return function() {
+    return Object.create(p5Wrapper);
   };
 }]);
