@@ -6,7 +6,7 @@
 
 ###p5 directive
 
-Define a p5.js sketch as a service - p5.js will run in "[instance mode](http://p5js.org/learn/examples/Instance_Mode_Instantiation.php)". Here's one named `mySketch`:
+Define a p5.js sketch as a service - p5.js will run in "[instance mode](http://p5js.org/examples/examples/Instance_Mode_Instantiation.php)". Here's one named `mySketch`:
 
 ```javascript
 angular.module('example', [
